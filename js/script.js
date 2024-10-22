@@ -5,11 +5,12 @@
  */
 
 const addEventOnElem = function (elem, type, callback) {
-  if (elem.length > 1) {
-    for (let i = 0; i < elem.length; i++) {
-      elem[i].addEventListener(type, callback);
-    }
+  // Check if 'elem' is an array-like object (NodeList, HTMLCollection) or a single element
+  if (elem instanceof NodeList || elem instanceof HTMLCollection) {
+    // If it's a collection, iterate and add the event listener to each element
+    elem.forEach((item) => item.addEventListener(type, callback));
   } else {
+    // If it's a single element, just add the event listener directly
     elem.addEventListener(type, callback);
   }
 };
@@ -121,9 +122,14 @@ let currentSlide = 0;
 const totalSlides = slides.length;
 
 function showSlide(index) {
-  slides[currentSlide].classList.remove("active"); // Hide current slide
-  currentSlide = (index + totalSlides) % totalSlides; // Update current slide index
-  slides[currentSlide].classList.add("active"); // Show new slide
+  // Ensure slides are available before proceeding
+  if (totalSlides > 0) {
+    slides[currentSlide].classList.remove("active"); // Hide current slide
+    currentSlide = (index + totalSlides) % totalSlides; // Update current slide index
+    slides[currentSlide].classList.add("active"); // Show new slide
+  } else {
+    console.log("No slides found!");
+  }
 }
 
 setInterval(() => {
@@ -213,10 +219,6 @@ const handleEmailSubmit = async (e) => {
     console.log(isLoading);
   }
 };
-
-if (isLoading === true) {
-  alert(isLoading);
-}
 
 const email_newsletter = document
   .getElementById("email-newsletter")
